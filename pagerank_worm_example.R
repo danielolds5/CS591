@@ -1,15 +1,15 @@
 library(igraph); 
 g1 = read.graph("C:\\Users\\cobysoss\\Desktop\\networks\\celegansneural.gml", "gml")
 area = vcount(g1)^2
-page_ranks = page.rank(g1)
+between = betweenness(g1)
 nodes <- 1:297
-df = data.frame(nodes, page_ranks$vector)
-df <- df[order(df$page_ranks.vector),]
+
+df = data.frame(nodes, between)
+df <- df[order(df$between),]
 numBlue = (nrow(df)/3) 
 j = 0
 for(i in 1:nrow(df)) 
 {
-   pageRank <- data.frame(df[i,2])
    node = data.frame(df[i, 1])
    if(j < numBlue)
    {

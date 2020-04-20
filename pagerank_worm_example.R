@@ -29,7 +29,7 @@ print(g1,
       edge.attributes = igraph_opt("print.edge.attributes"), names = TRUE,
       max.lines = igraph_opt("auto.print.lines"))
 
-plot( g1, layout = layout.lgl(g1, area, repulserad = area * vcount(g1)) * 1.5,
+plot( g1, layout = layout_with_kk,
       edge.width = 1,
       edge.arrow.width = 0.3,
       vertex.size = 3,

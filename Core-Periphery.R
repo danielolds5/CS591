@@ -1,5 +1,6 @@
 library(igraph)
 
+par(mar = c(1, 1, 1, 1)) # Set the margin on all sides to 2
 NN = read.graph("celegansneural.gml", format = c("gml"))
 nodes <- 1: 297
 degree_NN <- degree(NN)
@@ -46,7 +47,7 @@ for(i in 1:nrow(df))
   }
 }
 
-plot( NN, main = "core-periphery",layout = layout_with_kk,
+plot( NN, main = "Core-Periphery Nodes",layout = layout_with_kk,
       edge.width = 1,
       edge.arrow.width = 0.3,
       vertex.size = 6,
@@ -87,7 +88,7 @@ for(i in 1:nrow(df))
 
 plot( NN, layout = layout_with_kk,
       edge.width = 1,
-      main = "Pagerank diff with core nodes",
+      main = "Pagerank Diff with Core Nodes",
       edge.arrow.width = 0.3,
       vertex.size = 6,
       edge.arrow.size = 0.01,
@@ -125,7 +126,7 @@ for(i in 1:nrow(df))
   j <- j+1
 }
 
-plot( NN, main = "closeness centrality diff with core nodes", layout = layout_with_kk,
+plot( NN, main = "Closeness Centrality Diff with Core Nodes", layout = layout_with_kk,
       edge.width = 1,
       edge.arrow.width = 0.3,
       vertex.size = 6,
@@ -169,7 +170,7 @@ for(i in 1:nrow(df))
 }
 
 plot( NN, 
-      main = "betweenness centrality diff with core nodes", 
+      main = "Betweenness Centrality Diff with Core Nodes", 
       layout = layout_with_kk,
       edge.width = 1,
       edge.arrow.width = 0.3,
@@ -196,7 +197,7 @@ for(i in nodes)
 }
 
 plot( NN, 
-      main = "hyper-central nodes", 
+      main = "Hyper-central Nodes", 
       layout = layout_with_kk,
       edge.width = 1,
       edge.arrow.width = 0.3,

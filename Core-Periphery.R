@@ -57,6 +57,7 @@ plot( NN, main = "core-periphery",layout = layout_with_kk,
       margin = 0)
 
 ###############begin page rank comparison####################
+core_and_pr_intersect = c()
 page_ranks = page.rank(NN)
 df = data.frame(nodes, page_ranks$vector)
 df <- df[order(df$page_ranks.vector,decreasing = TRUE),]
@@ -69,7 +70,8 @@ for(i in 1:nrow(df))
   {
     if(node %in% core_nodes)
     {
-      V(NN)[unlist(node)]$color <- "red"  
+      V(NN)[unlist(node)]$color <- "red"
+      core_and_pr_intersect = c(core_and_pr_intersect, unlist(node))
     }
     else
     {
@@ -96,7 +98,6 @@ plot( NN, layout = layout_with_kk,
 
 
 ############Closeness comparison#################
-
 closenessCen = closeness(NN)
 nodes <- 1:297
 
@@ -137,6 +138,7 @@ plot( NN, main = "closeness centrality diff with core nodes", layout = layout_wi
 ####################Betweeness centrality##################################
 between = betweenness(NN)
 nodes <- 1:297
+core_and_pr_and_betweenness = c()
 
 df = data.frame(nodes, between)
 df <- df[order(df$between, decreasing = TRUE),]
@@ -148,6 +150,10 @@ for(i in 1:nrow(df))
   {
     if(node %in% core_nodes)
     {
+      if(node %in% core_and_pr_intersect)
+      {
+        core_and_pr_and_betweenness = c(core_and_pr_and_betweenness, unlist(node))
+      }
       V(NN)[unlist(node)]$color <- "red"  
     }
     else
@@ -174,3 +180,29 @@ plot( NN,
       asp = 1,
       margin = 0)
 
+##########Hyper central nodes####################################
+
+nodes = 1:297
+for(i in nodes)
+{
+  if(i %in% core_and_pr_and_betweenness)
+  {
+    V(NN)[i]$color <- "red"
+  }
+  else
+  {
+    V(NN)[i]$color <- "blue"
+  }
+}
+
+plot( NN, 
+      main = "hyper-central nodes", 
+      layout = layout_with_kk,
+      edge.width = 1,
+      edge.arrow.width = 0.3,
+      vertex.size = 6,
+      edge.arrow.size = 0.01,
+      vertex.size2 = 3,
+      vertex.label = NA,
+      asp = 1,
+      margin = 0)

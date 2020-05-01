@@ -1,5 +1,5 @@
 library(igraph)
-
+library(qs)
 NN = read.graph("celegansneural.gml", format = c("gml"))
 
 nodes <- 1: 297

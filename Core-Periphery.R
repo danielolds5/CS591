@@ -1,6 +1,4 @@
 library(igraph)
-library(ggraph)
-library(tidyverse)
 
 NN = read.graph("celegansneural.gml", format = c("gml"))
 
@@ -51,20 +49,25 @@ plot( NN, layout = layout_with_kk,
       asp = 1,
       margin = 0)
 
+matrix = as_adjacency_matrix(NN)
+maxDegreeG = max(degree(NN))
+degreeOfAllG = degree(NN)
 P <- function(i, U, G){  
-  matrix = as_adjacency_matrix(G)
+  #matrix = as_adjacency_matrix(G)
   for(j in U) 
-    P = sum(matrix[i,j]) + degree(G)[i] / max(degree(NN))
+    P = sum(matrix[i,j]) + degreeOfAllG[i] / maxDegreeG
   return(P)
 }
 
 getNeighbors <- function(U){ 
   totalNeighbors = c()
   for(u in U)
+  {
     u = unlist(u)
     Neighbors = neighbors(NN, V(NN)[u], mode = "all")
-    totalNeighbors = union(Neighbors, totalNeighbors)
-    return(totalNeighbors)
+    totalNeighbors = union(totalNeighbors, Neighbors)
+  }
+  return(totalNeighbors)
 }
 
 reRank <- function(G) {
@@ -87,13 +90,27 @@ reRank <- function(G) {
   while (length(V1) != 0)
   {
     scoreVector = array(data = 0, dim = 297, dimname = NULL)
-    for(i in getNeighbors(U)) 
+    neibors = getNeighbors(U)
+    for(i in neibors) 
     {
-      scoreVector[i] <- P(i, U, G)
+      if(i %in% V1)
+      {
+        scoreVector[i] <- P(i, U, G)  
+      }
+      
     }
     nextu = which(scoreVector == max(scoreVector))
+    l = length(nextu)
+    if(length(nextu) > 1)
+    {
+      nextu = nextu[1]
+    }
     U = union(U, nextu)
-    V1 <- V1[-nextu]
+    V1 <- V1[-which(V1 == nextu)]
+    len = length(V1)
+    print(len)
   }
-  Return(U)
+  return(U)
 } 
+
+reRank(NN)

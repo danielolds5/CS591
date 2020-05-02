@@ -1,9 +1,19 @@
 library(igraph)
 library(qs)
+library(tools)
 NN = read.graph("celegansneural.gml", format = c("gml"))
 
 nodes <- 1: 297
 degree_NN <- degree(NN)
+
+
+
+
+
+
+
+
+
 df = data.frame(nodes, degree_NN)
 df <- df[order(df$degree_NN, decreasing = TRUE),]
 
@@ -70,6 +80,10 @@ getNeighbors <- function(U){
   return(totalNeighbors)
 }
 
+fakeReRank <- function(G){
+   return(qs::qread(file = "rank.ser"))
+}
+
 reRank <- function(G) {
   
   degree_G <- degree(G)
@@ -112,5 +126,84 @@ reRank <- function(G) {
   }
   return(U)
 } 
+GeneralFrame <- function(G, B){
+  U = fakeReRank(G)
+  a = AvgDegreeFloor(G)
+  RDScores = array(data = 0, dim = length(U), dimname = NULL)
+  for(i in 1:length(U))
+  {
+    RDScores[i] = RD(G, U, i, a)
+  }
+  qsave(RDScores, "RD.ser")
+  return(0)
+}
+RD <- function(G, U, i, a)
+{
+  print(i)
+  if(i <= a)
+  {
+    m = 0
+    for(j in 1:i)
+    {
+      edges = E(G)[from(U[j])]
+      if(length(edges) > 0)
+      {
+        for(k in 1:length(E(G)[from(U[j])]))
+        {
+          n = ends(G, edges[k])
+          endpoint_not_uj = n[2]
+          if(endpoint_not_uj %in% U[1:j])
+          {
+            m = m + 1;
+          }
+        }  
+      }
+    }
+    totalLinks = i * (i - 1)
+    if(totalLinks == 0)
+    {
+      return(0)
+    }
+    return(m/totalLinks)
+  }
+  else
+  {
+    m = 0
+    for(j in (a+1):i)
+    {
+      if(j == 17)
+      {
+        someVar = 0
+      }
+      edges = E(G)[from(U[j])]
+      if(length(edges) > 0)
+      {
+        for(k in 1:length(E(G)[from(U[j])]))
+        {
+          n = ends(G, edges[k])
+          endpoint_not_uj = n[2]
+          if(endpoint_not_uj %in% U[(a+1):j])
+          {
+            m = m + 1;
+          }
+        }  
+      }
+    }
+    n = i-(a+1)
+    totalLinks = n *(n - 1)
+    if(totalLinks == 0)
+    {
+      return(0)
+    }
+    return(m/totalLinks)
+  }
+}
+
+AvgDegreeFloor <- function(G) {
+  return(floor(mean(degree(G))))  
+}
+
+GeneralFrame(NN, .5)
+
 
 reRank(NN)

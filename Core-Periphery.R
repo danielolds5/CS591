@@ -134,7 +134,7 @@ GeneralFrame <- function(G, B){
   {
     RDScores[i] = RD(G, U, i, a)
   }
-  qsave(RDScores, "RD.ser")
+  
   return(0)
 }
 RD <- function(G, U, i, a)
@@ -152,7 +152,7 @@ RD <- function(G, U, i, a)
         {
           n = ends(G, edges[k])
           endpoint_not_uj = n[2]
-          if(endpoint_not_uj %in% U[1:j])
+          if(endpoint_not_uj %in% U[1:i])
           {
             m = m + 1;
           }
@@ -171,10 +171,6 @@ RD <- function(G, U, i, a)
     m = 0
     for(j in (a+1):i)
     {
-      if(j == 17)
-      {
-        someVar = 0
-      }
       edges = E(G)[from(U[j])]
       if(length(edges) > 0)
       {
@@ -182,14 +178,14 @@ RD <- function(G, U, i, a)
         {
           n = ends(G, edges[k])
           endpoint_not_uj = n[2]
-          if(endpoint_not_uj %in% U[(a+1):j])
+          if(endpoint_not_uj %in% U[(a+1):i])
           {
             m = m + 1;
           }
         }  
       }
     }
-    n = i-(a+1)
+    n = i-(a)
     totalLinks = n *(n - 1)
     if(totalLinks == 0)
     {

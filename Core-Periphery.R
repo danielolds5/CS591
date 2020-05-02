@@ -132,10 +132,16 @@ GeneralFrame <- function(G, B){
   RDScores = array(data = 0, dim = length(U), dimname = NULL)
   for(i in 1:length(U))
   {
-    RDScores[i] = RD(G, U, i, a)
+    RDScores[i] = RDFake(G, U, i, a)
   }
   
   return(0)
+}
+RDFake <- function(G, U, i, a)
+{
+  print(i)
+  RDArray = qread("RD.ser")
+  return(RDArray[i])
 }
 RD <- function(G, U, i, a)
 {

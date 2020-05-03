@@ -213,7 +213,7 @@ FindCoreSet <- function(RDScores, U, a, B)
       #Variable = U[(i-a+1):i]
       print(CoreSet[2])
     }
-    else((RDScores[i-1] >= B) & (i > a))
+    else if((RDScores[i-1] >= B) & (i > a))
     {
       NumC = NumC + 1
     }

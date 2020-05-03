@@ -63,12 +63,12 @@ P <- function(i, U, G){
   return(P)
 }
 
-getNeighbors <- function(U){ 
+getNeighbors <- function(G, U){ 
   totalNeighbors = c()
   for(u in U)
   {
     u = unlist(u)
-    Neighbors = neighbors(NN, V(NN)[u], mode = "all")
+    Neighbors = neighbors(G, V(G)[u], mode = "all")
     totalNeighbors = union(totalNeighbors, Neighbors)
   }
   return(totalNeighbors)
@@ -98,7 +98,7 @@ reRank <- function(G) {
   while (length(V1) != 0)
   {
     scoreVector = array(data = 0, dim = 297, dimname = NULL)
-    neibors = getNeighbors(U)
+    neibors = getNeighbors(G, U)
     for(i in neibors) 
     {
       if(i %in% V1)
@@ -127,6 +127,39 @@ RDFake <- function(G, U, i, a)
   RDArray = qread("RD.ser")
   return(RDArray[i])
 }
+getNeighborsForMemberOfU <- function(G, u)
+{
+  neigbors = c()
+  u = unlist(u)
+  edges_from_u = E(G)[from(u)]
+  edges_to_u = E(G)[to(u)]
+  if(length(edges_from_u) > 0)
+  {
+    for(i in 1:length(edges_from_u))
+    {
+      edge_ends = ends(G, E(G)[edges_from_u[i]])
+      neigbors = union(neigbors,edge_ends[2])  
+    }  
+  }
+  if(length(edges_to_u) > 0)
+  {
+    for(i in 1:length(edges_to_u))
+    {
+      edge_ends = ends(G, E(G)[edges_to_u[i]])
+      neigbors = union(neigbors,edge_ends[1])  
+    }  
+  }
+  return(neigbors)
+}
+getNeighborsAlt <- function(G, U)
+{
+  neigbors = c()
+  for(u in U)
+  {
+    neigbors = union(neigbors, getNeighborsForMemberOfU(G, u))
+  }
+  return(neigbors)  
+}
 
 RD <- function(G, U, i, a)
 {
@@ -136,18 +169,13 @@ RD <- function(G, U, i, a)
     m = 0
     for(j in 1:i)
     {
-      edges = E(G)[from(U[j])]
-      if(length(edges) > 0)
+      neighborNodes = getNeighborsForMemberOfU(G, U[j])
+      for(neighborNode in neighborNodes)
       {
-        for(k in 1:length(E(G)[from(U[j])]))
+        if(neighborNode %in% U[1:i])
         {
-          node_endpoints = ends(G, edges[k])
-          endpoint_not_uj = node_endpoints[2]
-          if(endpoint_not_uj %in% U[1:i])
-          {
-            m = m + 1;
-          }
-        }  
+          m = m + 1;
+        }
       }
     }
     totalLinks = i * (i - 1)
@@ -162,18 +190,13 @@ RD <- function(G, U, i, a)
     m = 0
     for(j in (i-a+1):i)
     {
-      edges = E(G)[from(U[j])]
-      if(length(edges) > 0)
+      neighborNodes = getNeighborsForMemberOfU(G, U[j])
+      for(neighborNode in neighborNodes)
       {
-        for(k in 1:length(E(G)[from(U[j])]))
+        if(neighborNode %in% U[(i-a+1):i])
         {
-          node_endpoints = ends(G, edges[k])
-          endpoint_not_uj = node_endpoints[2]
-          if(endpoint_not_uj %in% U[(i-a+1):i])
-          {
-            m = m + 1;
-          }
-        }  
+          m = m + 1;
+        }
       }
     }
     n = length((i-a+1):i)
@@ -195,7 +218,7 @@ USubsetToList <- function(USubset)
   list = c()
   for(e in USubset)
   {
-    list = union(e, list)
+    list = union(list, e)
   }
   return(list)
 }
@@ -243,7 +266,7 @@ GeneralFrame <- function(G, B){
 }
 
 
-CSet = GeneralFrame(NN, .2)
+CSet = GeneralFrame(NN, .3)
 
 
 for(i in 1:297) 

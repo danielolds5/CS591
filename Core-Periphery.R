@@ -132,7 +132,7 @@ GeneralFrame <- function(G, B){
   RDScores = array(data = 0, dim = length(U), dimname = NULL)
   for(i in 1:length(U))
   {
-    RDScores[i] = RDFake(G, U, i, a)
+    RDScores[i] = RD(G, U, i, a)
   }
   
   return(0)
@@ -156,8 +156,8 @@ RD <- function(G, U, i, a)
       {
         for(k in 1:length(E(G)[from(U[j])]))
         {
-          n = ends(G, edges[k])
-          endpoint_not_uj = n[2]
+          node_endpoints = ends(G, edges[k])
+          endpoint_not_uj = node_endpoints[2]
           if(endpoint_not_uj %in% U[1:i])
           {
             m = m + 1;
@@ -175,28 +175,28 @@ RD <- function(G, U, i, a)
   else
   {
     m = 0
-    for(j in (a+1):i)
+    for(j in (i-a+1):i)
     {
       edges = E(G)[from(U[j])]
       if(length(edges) > 0)
       {
         for(k in 1:length(E(G)[from(U[j])]))
         {
-          n = ends(G, edges[k])
-          endpoint_not_uj = n[2]
-          if(endpoint_not_uj %in% U[(a+1):i])
+          node_endpoints = ends(G, edges[k])
+          endpoint_not_uj = node_endpoints[2]
+          if(endpoint_not_uj %in% U[(i-a+1):i])
           {
             m = m + 1;
           }
         }  
       }
     }
-    n = i-(a)
+    n = length((i-a+1):i)
     totalLinks = n *(n - 1)
     if(totalLinks == 0)
     {
       return(0)
-    }
+    }  
     return(m/totalLinks)
   }
 }

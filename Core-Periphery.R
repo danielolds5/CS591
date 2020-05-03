@@ -1,18 +1,12 @@
 library(igraph)
 library(qs)
-library(tools)
+
+# Read in Neural Network Data
 NN = read.graph("celegansneural.gml", format = c("gml"))
+
 
 nodes <- 1: 297
 degree_NN <- degree(NN)
-
-
-
-
-
-
-
-
 
 df = data.frame(nodes, degree_NN)
 df <- df[order(df$degree_NN, decreasing = TRUE),]
@@ -38,7 +32,7 @@ for(i in 1:nrow(df))
 for(i in 1:nrow(df)) 
 {
   node = data.frame(df[i, 1])
-
+  
   if(i <= k_best)
   {
     V(NN)[unlist(node)]$color <- "red"
@@ -81,7 +75,7 @@ getNeighbors <- function(U){
 }
 
 fakeReRank <- function(G){
-   return(qs::qread(file = "rank.ser"))
+  return(qs::qread(file = "rank.ser"))
 }
 
 reRank <- function(G) {
@@ -126,26 +120,17 @@ reRank <- function(G) {
   }
   return(U)
 } 
-GeneralFrame <- function(G, B){
-  U = fakeReRank(G)
-  a = AvgDegreeFloor(G)
-  RDScores = array(data = 0, dim = length(U), dimname = NULL)
-  for(i in 1:length(U))
-  {
-    RDScores[i] = RD(G, U, i, a)
-  }
-  
-  return(0)
-}
+
 RDFake <- function(G, U, i, a)
 {
   print(i)
   RDArray = qread("RD.ser")
   return(RDArray[i])
 }
+
 RD <- function(G, U, i, a)
 {
-  print(i)
+  #print(i)
   if(i <= a)
   {
     m = 0
@@ -205,7 +190,57 @@ AvgDegreeFloor <- function(G) {
   return(floor(mean(degree(G))))  
 }
 
-GeneralFrame(NN, .5)
+FindCoreSet <- function(RDScores, U, a, B) 
+{
+  NumC = c(1)
+  CoreSet = vector("list", 1000)
+  
+  for(i in a:length(U))
+  {
+    if(RDScores[i] >= B)
+    {
+      CoreSet[[NumC + 1]] = union(CoreSet[[NumC + 1]], c(1))
+      #Variable = U[(i-a+1):i]
+      print(CoreSet[2])
+    }
+    else((RDScores[i-1] >= B) & (i > a))
+    {
+      NumC = NumC + 1
+    }
+  }
+  if(RDScores[i] < B)
+  {
+    NumC = NumC - 1
+  }
+  
+  CoreSet[1] = NumC
+  return(CoreSet)
+}
+
+GeneralFrame <- function(G, B){
+  U = fakeReRank(G)
+  a = AvgDegreeFloor(G)
+  RDScores = array(data = 0, dim = length(U), dimname = NULL)
+  for(i in 1:length(U))
+  {
+    RDScores[i] = RDFake(G, U, i, a)
+  }
+  
+  CSet = FindCoreSet(RDScores, U, a, B)
+  
+  
+  return(0)
+}
+
+list = c()
+variable = U[(i-a+1):i]
+for(e in variable)
+{
+ list = union(e, list)
+  
+}
 
 
-reRank(NN)
+GeneralFrame(NN, .2)
+
+

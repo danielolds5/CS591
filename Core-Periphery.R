@@ -4,7 +4,6 @@ library(qs)
 # Read in Neural Network Data
 NN = read.graph("celegansneural.gml", format = c("gml"))
 
-
 nodes <- 1: 297
 degree_NN <- degree(NN)
 
@@ -57,7 +56,6 @@ matrix = as_adjacency_matrix(NN)
 maxDegreeG = max(degree(NN))
 degreeOfAllG = degree(NN)
 P <- function(i, U, G){  
-  #matrix = as_adjacency_matrix(G)
   for(j in U) 
     P = sum(matrix[i,j]) + degreeOfAllG[i] / maxDegreeG
   return(P)
@@ -233,35 +231,33 @@ FindCoreSet <- function(RDScores, U, a, B)
     if(RDScores[i] >= B)
     {
       CoreSet[[NumC + 1]] = union(CoreSet[[NumC + 1]], USubsetToList(U[(i-a+1):i]))
-      #Variable = U[(i-a+1):i]
-      #print(CoreSet[2])
     }
-    else if((RDScores[i-1] >= B) & (i > a))
+    else if(i > a)
     {
-      NumC = NumC + 1
-    }
+      if(RDScores[i-1] >= B)
+      {
+        NumC = NumC + 1  
+      }
+    } 
   }
   if(RDScores[i] < B)
   {
     NumC = NumC - 1
   }
-  
   CoreSet[1] = NumC
   return(CoreSet)
 }
 
 GeneralFrame <- function(G, B){
   U = fakeReRank(G)
-  a = AvgDegreeFloor(G)
+  #a = AvgDegreeFloor(G)
+  a = 1
   RDScores = array(data = 0, dim = length(U), dimname = NULL)
   for(i in 1:length(U))
   {
     RDScores[i] = RDFake(G, U, i, a)
   }
-  
   CSet = FindCoreSet(RDScores, U, a, B)
-  
-  
   return(CSet)
 }
 
@@ -296,5 +292,15 @@ plot( NN, layout = layout_with_kk,
       margin = 0)
 
 
-
+legend("bottomleft", 
+       legend = c("Group 1", "Group 2"), 
+       col = c(rgb(0.2,0.4,0.1,0.7), 
+               rgb(0.8,0.4,0.1,0.7)), 
+       pch = c(17,19), 
+       bty = "n", 
+       pt.cex = 2, 
+       cex = 1.2, 
+       text.col = "black", 
+       horiz = F , 
+       inset = c(0.1, 0.1))
 

@@ -190,6 +190,16 @@ AvgDegreeFloor <- function(G) {
   return(floor(mean(degree(G))))  
 }
 
+USubsetToList <- function(USubset)
+{
+  list = c()
+  for(e in USubset)
+  {
+    list = union(e, list)
+  }
+  return(list)
+}
+
 FindCoreSet <- function(RDScores, U, a, B) 
 {
   NumC = c(1)
@@ -199,7 +209,7 @@ FindCoreSet <- function(RDScores, U, a, B)
   {
     if(RDScores[i] >= B)
     {
-      CoreSet[[NumC + 1]] = union(CoreSet[[NumC + 1]], c(1))
+      CoreSet[[NumC + 1]] = union(CoreSet[[NumC + 1]], USubsetToList(U[(i-a+1):i]))
       #Variable = U[(i-a+1):i]
       print(CoreSet[2])
     }
@@ -232,13 +242,8 @@ GeneralFrame <- function(G, B){
   return(0)
 }
 
-list = c()
-variable = U[(i-a+1):i]
-for(e in variable)
-{
- list = union(e, list)
-  
-}
+
+
 
 
 GeneralFrame(NN, .2)

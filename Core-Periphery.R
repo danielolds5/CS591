@@ -203,7 +203,7 @@ USubsetToList <- function(USubset)
 FindCoreSet <- function(RDScores, U, a, B) 
 {
   NumC = c(1)
-  CoreSet = vector("list", 1000)
+  CoreSet = vector("list", 10)
   
   for(i in a:length(U))
   {
@@ -211,7 +211,7 @@ FindCoreSet <- function(RDScores, U, a, B)
     {
       CoreSet[[NumC + 1]] = union(CoreSet[[NumC + 1]], USubsetToList(U[(i-a+1):i]))
       #Variable = U[(i-a+1):i]
-      print(CoreSet[2])
+      #print(CoreSet[2])
     }
     else if((RDScores[i-1] >= B) & (i > a))
     {
@@ -239,13 +239,39 @@ GeneralFrame <- function(G, B){
   CSet = FindCoreSet(RDScores, U, a, B)
   
   
-  return(0)
+  return(CSet)
 }
 
 
+CSet = GeneralFrame(NN, .2)
 
 
+for(i in 1:297) 
+{
+  if(i %in% CSet[[2]])
+  {
+    V(NN)[i]$color <- "orange"
+  }
+  else if (i %in% CSet[[3]])
+  {
+    V(NN)[i]$color <- "yellow"
+  }
+  else if (i %in% CSet[[4]])
+  {
+    V(NN)[i]$color <- "green"
+  }
+}
 
-GeneralFrame(NN, .2)
+plot( NN, layout = layout_with_kk,
+      edge.width = 1,
+      edge.arrow.width = 0.3,
+      vertex.size = 3,
+      edge.arrow.size = 0.01,
+      vertex.size2 = 3,
+      vertex.label = NA,
+      asp = 1,
+      margin = 0)
+
+
 
 

@@ -6,7 +6,10 @@ NN = read.graph("celegansneural.gml", format = c("gml"))
 
 nodes <- 1: 297
 degree_NN <- degree(NN)
-
+for(i in 1:297)
+{
+  degree_NN[i] = .5 * degree_NN[i]
+}
 df = data.frame(nodes, degree_NN)
 df <- df[order(df$degree_NN, decreasing = TRUE),]
 
@@ -45,7 +48,7 @@ for(i in 1:nrow(df))
 plot( NN, layout = layout_with_kk,
       edge.width = 1,
       edge.arrow.width = 0.3,
-      vertex.size = 3,
+      vertex.size = 6,
       edge.arrow.size = 0.01,
       vertex.size2 = 3,
       vertex.label = NA,
@@ -262,7 +265,7 @@ GeneralFrame <- function(G, B){
 }
 
 
-CSet = GeneralFrame(NN, .2)
+CSet = GeneralFrame(NN, .25)
 
 
 for(i in 1:297) 
@@ -293,7 +296,7 @@ plot( NN, layout = layout_with_kk,
 
 
 legend("bottomleft", 
-       legend = c("Rank 1 Core", "Rank 2 Core", "Rank 3 Core", "Core in Descrete Algorithm", "Periphery"), 
+       legend = c("Rank 1 Core", "Rank 2 Core", "Rank 3 Core", "Descrete Algorithm Core", "Periphery"), 
        col = c("orange", 
                "yellow",
                "green",

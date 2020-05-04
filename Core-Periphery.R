@@ -251,7 +251,7 @@ FindCoreSet <- function(RDScores, U, a, B)
 GeneralFrame <- function(G, B){
   U = fakeReRank(G)
   #a = AvgDegreeFloor(G)
-  a = 1
+  a = 2
   RDScores = array(data = 0, dim = length(U), dimname = NULL)
   for(i in 1:length(U))
   {
@@ -262,7 +262,7 @@ GeneralFrame <- function(G, B){
 }
 
 
-CSet = GeneralFrame(NN, .3)
+CSet = GeneralFrame(NN, .2)
 
 
 for(i in 1:297) 
@@ -284,7 +284,7 @@ for(i in 1:297)
 plot( NN, layout = layout_with_kk,
       edge.width = 1,
       edge.arrow.width = 0.3,
-      vertex.size = 3,
+      vertex.size = 6,
       edge.arrow.size = 0.01,
       vertex.size2 = 3,
       vertex.label = NA,
@@ -293,10 +293,13 @@ plot( NN, layout = layout_with_kk,
 
 
 legend("bottomleft", 
-       legend = c("Group 1", "Group 2"), 
-       col = c(rgb(0.2,0.4,0.1,0.7), 
-               rgb(0.8,0.4,0.1,0.7)), 
-       pch = c(17,19), 
+       legend = c("Rank 1 Core", "Rank 2 Core", "Rank 3 Core", "Core in Descrete Algorithm", "Periphery"), 
+       col = c("orange", 
+               "yellow",
+               "green",
+               "red",
+               "Blue"),
+       pch = c(19,19), 
        bty = "n", 
        pt.cex = 2, 
        cex = 1.2, 
